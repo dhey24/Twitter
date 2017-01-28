@@ -8,6 +8,7 @@ from datetime import datetime
 import sys
 import re
 import raven
+import pprint
 
 from constants import (IGNORED_KEYWORDS, IGNORED_USERS, QUERY,
                        EU_LOCATIONS, EU_TIME_ZONES, TABLE_PREFIXES)
@@ -115,6 +116,7 @@ class StdOutListener(tweepy.StreamListener):
 
         if tweet_obj and is_good_tweet(tweet_obj) and no_ignored_keywords(tweet_obj) and not_too_old(tweet_obj):
             if good_location(tweet_obj) or good_url(tweet_obj) or good_text_indicators(tweet_obj):
+                pprint.pprint(tweet_obj)
                 tweet_text = tweet_obj['text'].encode('utf-8')
                 time_zone = tweet_obj['user']['time_zone']
                 if time_zone is not None:
