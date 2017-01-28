@@ -20,5 +20,5 @@ api = tweepy.API(auth)
 for i in range(5):
     tweet = get_random_tweet()
     print tweet
-    api.update_status(tweet)
+    api.update_status(status=tweet)
     time.sleep(np.random.poisson(60) * 3)
