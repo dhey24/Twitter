@@ -8,7 +8,7 @@ FILTER = "SELECT DISTINCT *  FROM test." + DB_PREFIX + "retweets WHERE tweet_tim
 
 QUERY = ["retweet win", "rt win", "retweet ticket", "rt ticket", "like for chance" ]
 
-TABLE_PREFIXES = ['tb3_']
+TABLE_PREFIXES = ['tb3']
 
 POSITIVE_KEYWORDS = {"win", "giveaway", "ticket", "tix"}
 
