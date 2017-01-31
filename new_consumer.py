@@ -8,6 +8,7 @@ from datetime import datetime
 import sys
 import re
 import raven
+import pprint
 
 from constants import (POSITIVE_KEYWORDS, IGNORED_KEYWORDS, IGNORED_USERS, QUERY,
                        EU_LOCATIONS, EU_TIME_ZONES, TABLE_PREFIXES, BANNED_KEYWORDS)
@@ -80,7 +81,7 @@ def good_location(decoded):
     location = decoded['user']['location']
     if location is not None and location.lower() in EU_LOCATIONS:
         good = True
-     #   print location
+        print "\nLOCATION = %s \n" % location
     return good
 
 
@@ -113,7 +114,6 @@ def get_tweet_obj(decoded):
 class StdOutListener(tweepy.StreamListener):
 
     def on_data(self, data):
-
         global retweets_to_populate
         decoded = json.loads(data)
         tweet_obj = get_tweet_obj(decoded)
@@ -123,31 +123,30 @@ class StdOutListener(tweepy.StreamListener):
         except:
             print "fail"
         if tweet_obj and is_good_tweet(tweet_obj) and no_ignored_keywords(tweet_obj) and not_too_old(tweet_obj) and no_banned_keywords(tweet_obj) and good_location(tweet_obj) and good_text_indicators(tweet_obj):
-            if 1 == 1:
-                tweet_text = tweet_obj['text'].encode('utf-8')
-                time_zone = tweet_obj['user']['time_zone']
-                if time_zone is not None:
-                    time_zone.encode('utf-8')
-                location = tweet_obj['user']['location']
-                if location is not None:
-                    location.encode('utf-8')
-                retweets_to_populate.append((
-                    tweet_obj['id'],
-                    tweet_text,
-                    datetime.strptime(tweet_obj['created_at'], '%a %b %d %H:%M:%S +0000 %Y'),
-                    tweet_obj['user']['id'],
-                    0,
-                    time_zone,
-                    'no-error',
-                    location,
-                    tweet_obj['user']['url']
-                ))
+            pprint.pprint(tweet_obj)
+            tweet_text = tweet_obj['text'].encode('utf-8')
+            time_zone = tweet_obj['user']['time_zone']
+            if time_zone is not None:
+                time_zone.encode('utf-8')
+            location = tweet_obj['user']['location']
+            if location is not None:
+                location.encode('utf-8')
+            retweets_to_populate.append((
+                tweet_obj['id'],
+                tweet_text,
+                datetime.strptime(tweet_obj['created_at'], '%a %b %d %H:%M:%S +0000 %Y'),
+                tweet_obj['user']['id'],
+                0,
+                time_zone,
+                'no-error',
+                location,
+                tweet_obj['user']['url']
+            ))
             if len(retweets_to_populate) > 10:
                 for prefix in TABLE_PREFIXES:
                     cursor.executemany('INSERT IGNORE INTO ' + prefix + '_retweets(tweet_id, tweet_text, tweet_time, author_id, status,time_zone, error,location, url) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)', retweets_to_populate)
                     db.commit()
                 retweets_to_populate = []
-            #    print "oops this got commented out"
 
     def on_error(self, status_code):
         client.captureMessage('Encountered error with status code:' + repr(status_code.encode('utf-8')))
@@ -175,4 +174,4 @@ if __name__ == '__main__':
 
     stream = tweepy.Stream(auth, l)
     stream.filter(track=QUERY)
-#    db.close()
+#    db.close() 
