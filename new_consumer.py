@@ -123,7 +123,7 @@ class StdOutListener(tweepy.StreamListener):
 #        except:
 #            print "fail"
         if tweet_obj and is_good_tweet(tweet_obj) and no_ignored_keywords(tweet_obj) and not_too_old(tweet_obj) and no_banned_keywords(tweet_obj) and good_location(tweet_obj) and good_text_indicators(tweet_obj):
-            pprint.pprint(tweet_obj)
+            #pprint.pprint(tweet_obj)
             tweet_text = tweet_obj['text'].encode('utf-8')
             time_zone = tweet_obj['user']['time_zone']
             if time_zone is not None:
