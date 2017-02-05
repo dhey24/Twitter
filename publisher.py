@@ -165,6 +165,7 @@ def fetch_new_tweets_from_db(tz, lc):
     #added check to make the bot sleep for at least two hours + a random amount of time ~10min
     elif datetime.datetime.now().hour == randint(0,3):
         time.sleep(7200 + np.random.poisson(900))
+        api.update_status(get_random_tweet())
 
 if __name__ == '__main__':
     # default to eu
@@ -195,4 +196,4 @@ if __name__ == '__main__':
         cursor = db.cursor()
         fetch_new_tweets_from_db(tz, lc)
         db.close()
-#        api.update_status(get_random_tweet())
+        
